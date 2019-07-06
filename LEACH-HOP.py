@@ -131,6 +131,17 @@ def setorizacao(lista,divisor):
 
     return lista
 
+def checaBateria(nodes):
+    for k in nodes:
+        if(k[1] <= 0):
+            nodes.remove(k)
+
+def desvio_padrao(valores, media):
+    soma = 0
+    for valor in valores:
+        soma += math.pow( (valor - media), 2)
+    return math.sqrt( soma / float( len(valores) ) )
+
 ############################### Variables ################################
 CH = []
 tamPacoteConfig = 300
@@ -196,6 +207,9 @@ for cenario in range(4):
 
                 # Realiza seleção de CH
                 CH = selecao_CH(nodes, Round, percentualCH)
+
+                # Conta os frames que foram executados
+                totalFramesExecutados = 0
 
                 # Execução após seleção
                 if(len(CH) != 0):
@@ -271,9 +285,11 @@ for cenario in range(4):
                         if(intraCluster == 1):
                             for k in nodes:
                                 # Acho o setor dentro do clusters
+                                setor = 0
                                 for node in k[8]:
                                     if(k[0] == node[0]):
                                         setor = node[4]
+                                        break
                                 # Achar node vizinho mais proximo
                                 id = k[7][0][0]
                                 menor = k[4]
@@ -302,17 +318,21 @@ for cenario in range(4):
                             mapaEncaminhamento.append( k[7][0][0] )
 
                 		# FRAMES
-                        for l in range(qtdFrames):
+                        for contFrame in range(qtdFrames):
+                            confirmaFrame = 0
                             # NCH: Transmite Pacote
                             for k in nodes:
                                 if(intraCluster == 1):
                                     # Gasto de agregação de dados
-                                    k[1] = k[1] - (0.000000005*tamPacoteTransmissao*(contEncaminhamento(k[0], mapaEncaminhamento) + 1))
+                                    totalContEnc = contEncaminhamento(k[0], mapaEncaminhamento)
+                                    if(totalContEnc > 0):
+                                        k[1] = k[1] - (0.000000005*tamPacoteTransmissao*(totalContEnc + 1))
                                 k[1] = gastoTx(k[1],k[4],tamPacoteTransmissao)
                             # CH: Recebe Pacote
                             for k in CH:
                                 for l in range( contEncaminhamento(k[0], mapaEncaminhamento) ):
                                     k[1] = gastoRx(k[1],tamPacoteTransmissao)
+                            # NCH: Recebe Pacote
                             if(intraCluster == 1):
                                 for k in nodes:
                                     for l in range( contEncaminhamento(k[0], mapaEncaminhamento) ):
@@ -320,7 +340,9 @@ for cenario in range(4):
                             # CH: Envia Pacote para a BS
                             for k in CH:
                                 # Gasto de agregação de dados
-                                k[1] = k[1] - (0.000000005*tamPacoteTransmissao*contEncaminhamento(k[0], mapaEncaminhamento))
+                                totalContEnc = contEncaminhamento(k[0], mapaEncaminhamento)
+                                if(totalContEnc > 0):
+                                    k[1] = k[1] - (0.000000005*tamPacoteTransmissao*(totalContEnc + 1))
                                 node = k
                                 idDestino = node[7][0][0]
                                 while(idDestino != 0):
@@ -330,16 +352,14 @@ for cenario in range(4):
                                     node[1] = gastoRx(node[1],tamPacoteTransmissao)
                                     idDestino = node[7][0][0]
                                 node[1] = gastoTx(node[1],node[4],tamPacoteTransmissao)
+                                if(node[1] >= 0):
+                                    # Confirma que houve um envio a BS
+                                	confirmaFrame += 1
 
-                    '''print(Round)
-                    print(str(len(CH)) + " " + str(len(nodes)))
-                    print(CH)
-                    print(nodes)
+                            # Aumenta apenas se algum pacote foi enviado para a BS
+                            if(confirmaFrame > 0):
+                            	totalFramesExecutados += 1
 
-                    for l in CH:
-                        print(str(l[0]) + ' s: ' + str(l[9]) + ' nodeDe ' + str(l[7]))
-                    print(str(node[0]) + ' ' + str(idDestino) + ' distancia' + str(node[4]))
-                    input()'''
             		# FECHAMENTO DO ROUND
                     # Encerramento do Round
                     for k in CH:
@@ -350,14 +370,12 @@ for cenario in range(4):
                         k[8] = []
 
                     #Exclui zerados
-                    for k in nodes:
-                        if(k[1] <= 0):
-                            nodes.remove(k)
+                    checaBateria(nodes)
 
                     CH = []
                     Round = Round + 1
                     if(nodes != []):
-                        totalFrames += qtdFrames
+                        totalFrames += totalFramesExecutados
 
                     # FIM DE UM ROUND ##########
 
@@ -367,12 +385,6 @@ for cenario in range(4):
             # FIM DE UMA SIMULAÇÃO ##########
 
         ############################### Estatísticas ################################
-        def desvio_padrao(valores, media):
-            soma = 0
-            for valor in valores:
-                soma += math.pow( (valor - media), 2)
-            return math.sqrt( soma / float( len(valores) ) )
-
         media = sum(framesSimulacao) / total_simulacoes
 
         print('\nResultado do ' + str(modoOp[0]) + str(modoOp[1]) +"-LEACH-HOP:")
