@@ -4,12 +4,12 @@ import math
 import numpy as np
 
 ############################### Geração de Redes ################################
-def gerarCenario(qtdNodes):
+def gerarCenario(qtdNodes,distMax):
     nodes = []
     for i in range(1, qtdNodes+1):
-        x = round(np.random.uniform(0, 100), 2)
-        y = round(np.random.uniform(0, 100), 2)
-        nodes.append([i, 0.5, x, y, 142.0, 0, 0, [], [], 0])
+        x = round(np.random.uniform(0, area), 2)
+        y = round(np.random.uniform(0, area), 2)
+        nodes.append([i, 0.5, x, y, distMax, 0, 0, [], [], 0])
     return nodes
 
 ############################### Functions ################################
@@ -98,7 +98,7 @@ def setorizacaoCH(listaDistancias,distancia,divisor):
         return 6
     elif(distancia <= menor + 7*valor):
         return 7
-    elif(distancia <= menor + 8*valor):
+    else:
         return 8
 
 def setorizacao(lista,divisor):
@@ -126,7 +126,7 @@ def setorizacao(lista,divisor):
                 k[4] = 6
             elif(k[3] <= ordenado[0] + 7*valor):
                 k[4] = 7
-            elif(k[3] <= ordenado[0] + 8*valor):
+            else:
                 k[4] = 8
 
     return lista
@@ -145,6 +145,8 @@ def desvio_padrao(valores, media):
 ############################### Variables ################################
 CH = []
 tamPacoteConfig = 300
+area = 500.0
+distMax = distancia(0,0, area,area)
 
 modosHop = [[0,0],[0,1],[1,0],[1,1]]
 
@@ -157,16 +159,16 @@ list_qtdSetores = [2.0,4.0,6.0,8.0]
 total_simulacoes = 33
 framesSimulacao = []
 
-BS = [0,125.0,50.0,0.0,0]
+BS = [0,area+25.0,area / 2,0.0,0]
 
 ############################### Main ################################
 for cenario in range(4):
 
-    qtdNodes = list_qtdNodes[cenario] #range(4)
+    qtdNodes = list_qtdNodes[0] #range(4)
     qtdFrames = list_qtdFrames[0] #range(6)
     tamPacoteTransmissao = list_tamPacoteTransmissao[0] #range(4)
     percentualCH = list_percentualCH[0] #range(4)
-    qtdSetores = list_qtdSetores[0] #range(4)
+    qtdSetores = list_qtdSetores[3] #range(4)
 
     print("\n\nCENÁRIO: " + str(qtdNodes) + ' nodes, '
                       + str(qtdFrames) + ' frames, '
@@ -183,7 +185,7 @@ for cenario in range(4):
         for simulacao in range(total_simulacoes):
             Round = 1
             totalFrames = 0
-            nodes = gerarCenario(qtdNodes)
+            nodes = gerarCenario(qtdNodes,distMax)
 
             if(interCluster == 1):
             	# CONFIGURAÇÕES INICIAIS (Setorização intercluster)
@@ -365,7 +367,7 @@ for cenario in range(4):
                     for k in CH:
                         nodes.append(k)
                     for k in nodes:
-                        k[4] = 142.0
+                        k[4] = distMax
                         k[7] = []
                         k[8] = []
 
