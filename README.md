@@ -9,7 +9,7 @@ O LEACH-HOP é um protocolo de clustering que usa o multi-hop em suas operaçõe
 
 **3-** Todos os CH **gastam energia de transmissão** no envio do pacote de broadcast.
 
-**4-** **(Condicional: Intercluster):** Os CHs vão receber os pacotes uns dos outros, **gastando energia na recepção**.
+**4-** Os CHs vão receber os pacotes uns dos outros por estarem com o radio ligado, **gastando energia na recepção**.
 
 **5-** Os NCH irão receber os pacotes, **gastando energia de recepção**, e vão escolher o CH mais proximo para ser seu CH.
 
@@ -17,7 +17,7 @@ O LEACH-HOP é um protocolo de clustering que usa o multi-hop em suas operaçõe
 
 **7-** Os CH **gastam energia de recepção** do pacote de resposta para cada um dos nós que entrarão no cluster. 
 
-**8-** O CH enviará a tabela TDMA e uma lista com todos os elementos do seu cluster para os membros do seu cluster, **gastando energia de transmissão** usando a distância máxima do nó mais distante.
+**8-** O CH enviará a tabela TDMA com o slot de tempo de envio, o nó de destino e os slots que o nó necessita ativa o rádio para receber os pacotes, **gastando energia de transmissão** usando a distância máxima do nó mais distante.
 
 **9-** Os NCH **gastam energia de recepção** dos pacotes TDMA.
 
