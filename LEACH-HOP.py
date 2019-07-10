@@ -145,8 +145,6 @@ def desvio_padrao(valores, media):
 ############################### Variables ################################
 CH = []
 tamPacoteConfig = 300
-area = 50.0
-distMax = distancia(0,0, area,area)
 
 modosHop = [[0,0],[0,1],[1,0],[1,1]]
 
@@ -155,11 +153,10 @@ list_qtdFrames = [1,2,4,6,8,10]
 list_tamPacoteTransmissao = [2000, 4000, 6000, 8000]
 list_percentualCH = [0.05, 0.10, 0.15, 0.20]
 list_qtdSetores = [2.0,4.0,6.0,8.0]
+list_area = [100,150,200,250]
 
 total_simulacoes = 33
 framesSimulacao = []
-
-BS = [0,area+25.0,area / 2,0.0,0]
 
 ############################### Main ################################
 for cenario in range(4):
@@ -169,6 +166,11 @@ for cenario in range(4):
     tamPacoteTransmissao = list_tamPacoteTransmissao[0] #range(4)
     percentualCH = list_percentualCH[0] #range(4)
     qtdSetores = list_qtdSetores[0] #range(4)
+
+    area = list_area[0] #range(4)
+    distMax = distancia(0,0, area,area)
+
+    BS = [0,area+25.0,area / 2,0.0,0]
 
     print("\n\nCENÁRIO: " + str(qtdNodes) + ' nodes, '
                       + str(qtdFrames) + ' frames, '
