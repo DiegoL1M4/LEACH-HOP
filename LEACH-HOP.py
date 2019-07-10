@@ -224,13 +224,12 @@ for cenario in range(4):
                         k[7].append(BS)
                         k[1] = gastoTx(k[1],k[4],tamPacoteConfig)
 
-                    # INTERCLUSTER: Chs recebem o broadcast dos outros CHs
-                    if(interCluster == 1):
-                        for k in CH:
-                            for node in pacotesBroadcast:
-                                if(node[0] != k[0]):
-                                    k[7].append(node)
-                            k[1] = gastoRx(k[1],tamPacoteConfig)
+                    # RECEPÇÃO     CH: Chs recebem o broadcast dos outros CHs (os rádios estão ligados)
+                    for k in CH:
+                        for node in pacotesBroadcast:
+                            if(node[0] != k[0]):
+                                k[7].append(node)
+                        k[1] = gastoRx(k[1],tamPacoteConfig)
 
                     if(nodes != []):
                 		# RECEPÇÃO    NCH: Recepção dos Pacotes de Bradcast
