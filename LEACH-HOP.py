@@ -149,7 +149,7 @@ tamPacoteConfig = 300
 modosHop = [[0,0],[0,1],[1,0],[1,1]]
 
 list_qtdNodes = [100, 150, 200, 250]
-list_qtdFrames = [1,2,4,6,8,10]
+list_qtdFrames = [1,4,7,10]
 list_tamPacoteTransmissao = [2000, 4000, 6000, 8000]
 list_percentualCH = [0.05, 0.10, 0.15, 0.20]
 list_qtdSetores = [2.0,4.0,6.0,8.0]
@@ -159,18 +159,18 @@ total_simulacoes = 33
 framesSimulacao = []
 
 ############################### Main ################################
+# Realiza a variação de um dos cenários (Quem usar a variável: cenario)
 for cenario in range(4):
 
-    qtdNodes = list_qtdNodes[cenario] #range(4)
-    qtdFrames = list_qtdFrames[0] #range(6)
-    tamPacoteTransmissao = list_tamPacoteTransmissao[0] #range(4)
-    percentualCH = list_percentualCH[0] #range(4)
-    qtdSetores = list_qtdSetores[0] #range(4)
+    qtdNodes =                         list_qtdNodes[0]
+    qtdFrames =                       list_qtdFrames[0]
+    tamPacoteTransmissao = list_tamPacoteTransmissao[0]
+    percentualCH =                 list_percentualCH[0]
+    qtdSetores =                     list_qtdSetores[0]
+    area =                                 list_area[cenario]
 
-    area = list_area[0] #range(4)
     distMax = distancia(0,0, area,area)
-
-    BS = [0,area+25.0,area / 2,0.0,0]
+    BS = [0, area+25.0, area/2, 0.0, 0]
 
     print("\n\nCENÁRIO: " + str(qtdNodes) + ' nodes, '
                       + str(qtdFrames) + ' frames, '
@@ -179,12 +179,14 @@ for cenario in range(4):
                       + str(int(qtdSetores)) + ' setores, '
                       + str(int(area)) + ' m2')
 
+    # Altera entre os modos de operação do multi-hop
     for modoOp in modosHop:
         intraCluster = modoOp[0]
         interCluster = modoOp[1]
 
         framesSimulacao = []
 
+        # Iteração para realizar várias iterações (total de simulações)
         for simulacao in range(total_simulacoes):
             Round = 1
             totalFrames = 0
@@ -203,7 +205,8 @@ for cenario in range(4):
                     k[9] = setorizacaoCH(distanciasBS,distanciasBS[k[0]-1],qtdSetores)
                     k[1] = gastoRx(k[1],tamPacoteConfig)
 
-            # EXECUÇÃO DA SIMULAÇÃO
+
+            # INICIO DA EXECUÇÃO DA SIMULAÇÃO
             while(len(nodes) != 0):
                 #Verifica Reset do Round Superior
                 if(verifica_eleitos(nodes)):
